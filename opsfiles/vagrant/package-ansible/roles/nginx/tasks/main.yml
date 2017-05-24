@@ -1,0 +1,51 @@
+---
+#
+# roles/nginx/tasks/main.yml
+#
+
+# https://www.nginx.com/blog/installing-nginx-nginx-plus-ansible/
+- name: NGINX | Installing NGINX repo rpm
+  yum:
+    name: http://nginx.org/packages/centos/7/noarch/RPMS/nginx-release-centos-7-0.el7.ngx.noarch.rpm
+ 
+- name: NGINX | Installing NGINX
+  yum:
+    name: nginx
+    state: latest
+    update_cache: yes
+ 
+- name: NGINX | Starting NGINX
+  service:
+    name: nginx
+    state: started
+
+- name: copy nginx.default.config
+  copy: >
+    src=roles/nginx/templates/nginx.conf.j2
+    dest=/etc/nginx/nginx.conf
+    force=yes
+    backup=yes
+    group=root
+    owner=root
+    mode=0644    
+
+- name: copy nginx.logrotate.config
+  copy: >
+    src=roles/nginx/templates/nginx_logrotate.j2
+    dest=/etc/logrotate.d/nginx
+    force=yes
+    backup=yes
+    group=root
+    owner=root
+    mode=0644    
+  notify: restart nginx 
+
+- name: copy nginx.aszoo-api-development.config
+  copy:
+    src: roles/nginx/templates/aszoo-api-{{ node }}.conf.j2
+    dest: /etc/nginx/conf.d/aszoo-api-{{ node }}.conf
+    backup: yes
+    group: root
+    owner: root
+    mode: 0644   
+  notify: restart nginx 
