@@ -19,9 +19,10 @@ $ vagrant up
 
 ### 取得
 
-+ securely password
++ securely passwordの取得コマンド
 
 ```
+$ cd opsfiles/vagrant
 $ ssh -i .vagrant/machines/web/virtualbox/private_key vagrant@192.168.33.51 "sudo cat /var/lib/jenkins/secrets/initialAdminPassword"
 ```
 
